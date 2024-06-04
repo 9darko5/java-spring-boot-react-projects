@@ -2,12 +2,15 @@ package com.demo.emsbackend.controller;
 
 import org.springframework.web.bind.annotation.*;
 
+import com.demo.emsbackend.dto.AuthResponseDto;
 import com.demo.emsbackend.dto.LoginDto;
 import com.demo.emsbackend.dto.RegisterDto;
 import com.demo.emsbackend.entity.Role;
 import com.demo.emsbackend.entity.UserEntity;
 import com.demo.emsbackend.repository.RoleRepository;
 import com.demo.emsbackend.repository.UserRepository;
+import com.demo.emsbackend.security.JWTGenerator;
+
 import lombok.AllArgsConstructor;
 
 import java.util.Collections;
@@ -33,26 +36,30 @@ public class AuthController {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
+    private JWTGenerator jwtGenerator;
 
     public AuthController(AuthenticationManager authenticationManager,
     UserRepository userRepository,
     RoleRepository roleRepository,
-    PasswordEncoder passwordEncoder){
+    PasswordEncoder passwordEncoder,
+    JWTGenerator jwtGenerator){
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtGenerator = jwtGenerator;
     }
 
     @PostMapping("login")
-    public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<AuthResponseDto> login(@RequestBody LoginDto loginDto) {
         
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), 
         loginDto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new ResponseEntity<>("User signed successfully", HttpStatus.OK);
+        String token = jwtGenerator.generateToken(authentication);
+        return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
     }
     
 
