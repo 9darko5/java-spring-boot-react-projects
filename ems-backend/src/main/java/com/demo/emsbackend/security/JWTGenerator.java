@@ -1,8 +1,7 @@
 package com.demo.emsbackend.security;
 
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.util.Base64;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -17,11 +16,11 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JWTGenerator {
  
+    private static final SecretKey key = Keys.hmacShaKeyFor(hashSecretToBytes(SecurityConstants.JWT_SECRET));
     public String generateToken(Authentication authentication){
         String username = authentication.getName();
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + SecurityConstants.JWT_EXPIRATION);
-        SecretKey key = Keys.hmacShaKeyFor(Base64.getEncoder().encodeToString(SecurityConstants.JWT_SECRET.getBytes()).getBytes());
 
         String token = Jwts.builder()
             .subject(username)
@@ -35,7 +34,8 @@ public class JWTGenerator {
 
     public boolean validateToken(String token) {
         Date expirationDate = getClaims(token).getExpiration();
-        return !expirationDate.before(new Date());
+        var currentDate = new Date();
+        return !expirationDate.before(currentDate);
     }
 
     public String getUsernameFromJwt(String token){
@@ -44,8 +44,17 @@ public class JWTGenerator {
     }
 
     private Claims getClaims(String token) {
-        return Jwts.parser().
-                verifyWith(Keys.hmacShaKeyFor(Base64.getEncoder().encodeToString(SecurityConstants.JWT_SECRET.getBytes()).getBytes()))
-                .build().parseSignedClaims(token).getPayload();
+        return (Claims)Jwts.parser().verifyWith(key).build().parse(token).getPayload();
+    }
+
+    private static byte[] hashSecretToBytes(String secretKey) {
+        try{
+            final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            
+            final byte[] hashbytes = digest.digest(secretKey.getBytes());
+            return hashbytes;
+        } catch(NoSuchAlgorithmException ex){
+            return null;
+        }
     }
 }
