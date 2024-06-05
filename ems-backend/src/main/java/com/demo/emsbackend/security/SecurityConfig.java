@@ -34,7 +34,7 @@ public class SecurityConfig {
 				.csrfTokenRepository(new HttpSessionCsrfTokenRepository())
 			)
             .csrf(AbstractHttpConfigurer::disable)
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))        
+            //.exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))        
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/api/auth/**").permitAll()
