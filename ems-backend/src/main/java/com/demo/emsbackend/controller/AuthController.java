@@ -82,9 +82,9 @@ public class AuthController {
         return new ResponseEntity<>("User registered successfully!", HttpStatus.OK);
     }
 
-    /* @GetMapping("IsAlive")
+    @GetMapping("IsAlive")
     public String getMethodName() {
         return new String("OK");
-    } */
+    }
 
 }

@@ -1,13 +1,13 @@
-import axios from "axios";
+import axiosInstance from '../helpers/axiosConfig';
 
-const REST_API_BASE_URL = "https://localhost:443/api/employees"
+const REST_API_BASE_URL = "https://localhost:443/api/employees";
 
-export const listEmployees = () =>  axios.get(REST_API_BASE_URL);
+export const listEmployees = () => axiosInstance.get(REST_API_BASE_URL);
 
-export const createEmployee = (employee) => axios.post(REST_API_BASE_URL, employee);
+export const createEmployee = (employee) => axiosInstance.post(REST_API_BASE_URL, employee);
 
-export const getEmployee = (employeeId) => axios.get(REST_API_BASE_URL + '/' + employeeId);
+export const getEmployee = (employeeId) => axiosInstance.get(REST_API_BASE_URL + '/' + employeeId);
 
-export const updateEmployee = (employeeId, employee) => axios.put(REST_API_BASE_URL + '/' + employeeId, employee);
+export const updateEmployee = (employeeId, employee) => axiosInstance.put(REST_API_BASE_URL + '/' + employeeId, employee);
 
-export const deleteEmployee = (employeeId) => axios.delete(REST_API_BASE_URL + '/' + employeeId);
+export const deleteEmployee = (employeeId) => axiosInstance.delete(REST_API_BASE_URL + '/' + employeeId);
