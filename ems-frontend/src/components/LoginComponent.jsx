@@ -11,7 +11,6 @@ const LoginComponent = () => {
     e.preventDefault();
     try {
       const response = await axios.post('https://localhost:443/api/auth/login', { username, password });
-      debugger
       localStorage.setItem('accessToken', response.data.accessToken);
       navigate('/employees');
     } catch (error) {

@@ -1,5 +1,6 @@
 package com.demo.emsbackend.security;
 
+import com.demo.emsbackend.service.TokenBlacklistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,13 +21,15 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private JWTGenerator tokenGenerator;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+    @Autowired
+    private TokenBlacklistService tokenBlacklistService;
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String token = getJWTFromRequest(request);
-        if(StringUtils.hasText(token) && tokenGenerator.validateToken(token)){
+        if(StringUtils.hasText(token) && tokenGenerator.validateToken(token) && !tokenBlacklistService.isTokenBlacklisted(token)){
             String username = tokenGenerator.getUsernameFromJwt(token);
 
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);

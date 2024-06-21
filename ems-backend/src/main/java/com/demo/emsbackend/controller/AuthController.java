@@ -1,5 +1,8 @@
 package com.demo.emsbackend.controller;
 
+import com.demo.emsbackend.service.TokenBlacklistService;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import com.demo.emsbackend.dto.AuthResponseDto;
@@ -38,16 +41,20 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
     private JWTGenerator jwtGenerator;
 
+    private TokenBlacklistService tokenBlacklistService;
+
     public AuthController(AuthenticationManager authenticationManager,
     UserRepository userRepository,
     RoleRepository roleRepository,
     PasswordEncoder passwordEncoder,
-    JWTGenerator jwtGenerator){
+    JWTGenerator jwtGenerator,
+    TokenBlacklistService tokenBlacklistService){
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtGenerator = jwtGenerator;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     @PostMapping("login")
@@ -61,7 +68,16 @@ public class AuthController {
         String token = jwtGenerator.generateToken(authentication);
         return new ResponseEntity<>(new AuthResponseDto(token), HttpStatus.OK);
     }
-    
+
+    @PostMapping("logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        String token = getJWTFromRequest(request);
+        if (StringUtils.hasText(token)) {
+            tokenBlacklistService.blacklistToken(token);
+            SecurityContextHolder.clearContext();
+        }
+        return ResponseEntity.ok("Logout successful");
+    }
 
     @PostMapping("register")
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
@@ -87,4 +103,11 @@ public class AuthController {
         return new String("OK");
     }
 
+    private String getJWTFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
 }
