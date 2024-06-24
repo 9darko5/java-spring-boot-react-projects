@@ -29,7 +29,8 @@ const RegisterComponent = () => {
           <label>Password</label>
           <input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
-        <button type="submit" className="btn btn-primary">Register</button>
+        <button type="submit" className="btn btn-primary">Register</button><br/>
+        <span>Have an account? </span><a href='login'>Log in</a>
       </form>
     </div>
   );
