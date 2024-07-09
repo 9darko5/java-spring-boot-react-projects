@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react'
-import { createEmployee, getEmployee, updateEmployee } from '../services/EmployeeService'
+import { createRunner, getRunner, updateRunner } from '../services/RunnerService'
 import { useNavigate, useParams } from 'react-router-dom'
 
-const EmployeeComponent = () => {
+const RunnerComponent = () => {
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
@@ -20,7 +20,7 @@ const EmployeeComponent = () => {
 
     useEffect(()=>{
         if(id){
-           getEmployee(id).then((response) => {
+           getRunner(id).then((response) => {
                 setFirstName(response.data.firstName);
                 setLastName(response.data.lastName);
                 setEmail(response.data.email);
@@ -30,25 +30,25 @@ const EmployeeComponent = () => {
         }
     }, []);
 
-    const saveOrUpdateEmployee = (e) => {
+    const saveOrUpdateRunner = (e) => {
         e.preventDefault();
 
-        const employee = {firstName, lastName, email};
-        console.log(employee);
+        const runner = {firstName, lastName, email};
+        console.log(runner);
 
         if(validateForm()){
 
             if(id){
-                updateEmployee(id, employee).then((response) => {
+                updateRunner(id, runner).then((response) => {
                     console.log(response.data);
-                    navigator('/employees')
+                    navigator('/runners')
                 }).catch((error) => {
                     console.error(error);
                 });
             } else {
-                createEmployee(employee).then((response)=>{
+                createRunner(runner).then((response)=>{
                     console.log(response.data);
-                    navigator('/employees');
+                    navigator('/runners');
                 });
             }
         }
@@ -87,9 +87,9 @@ const EmployeeComponent = () => {
 
     const pageTitle = () => {
         if(id){
-            return <h2 className='text-center'>Update Employee</h2>
+            return <h2 className='text-center'>Update Runner</h2>
         } else{
-            return <h2 className='text-center'>Add Employee</h2>
+            return <h2 className='text-center'>Add Runner</h2>
         }
     }
 
@@ -107,7 +107,7 @@ const EmployeeComponent = () => {
                             <label className='form-label'>First name:</label>
                             <input
                             type='text'
-                            placeholder='Enter Employee First Name'
+                            placeholder='Enter Runner First Name'
                             name='firstName'
                             value={firstName}
                             className={`form-control ${errors.firstName ? 'is-invalid': ''}`}
@@ -120,7 +120,7 @@ const EmployeeComponent = () => {
                             <label className='form-label'>Last name:</label>
                             <input
                             type='text'
-                            placeholder='Enter Employee Last Name'
+                            placeholder='Enter Runner Last Name'
                             name='lastName'
                             value={lastName}
                             className={`form-control ${errors.lastName ? 'is-invalid': ''}`}
@@ -133,7 +133,7 @@ const EmployeeComponent = () => {
                             <label className='form-label'>Email:</label>
                             <input
                             type='text'
-                            placeholder='Enter Employee Email'
+                            placeholder='Enter Runner Email'
                             name='email'
                             value={email}
                             className={`form-control ${errors.email ? 'is-invalid': ''}`}
@@ -143,7 +143,7 @@ const EmployeeComponent = () => {
                             {errors.email && <div className='invalid-feedback'> {errors.email}</div>}
                         </div>
 
-                        <button className='btn btn-success' onClick={saveOrUpdateEmployee}>Submit</button>
+                        <button className='btn btn-success' onClick={saveOrUpdateRunner}>Submit</button>
                     </form>
                 </div>
             </div>
@@ -152,4 +152,4 @@ const EmployeeComponent = () => {
   )
 }
 
-export default EmployeeComponent
+export default RunnerComponent

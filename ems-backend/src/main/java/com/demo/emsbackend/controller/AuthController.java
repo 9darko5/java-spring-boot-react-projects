@@ -14,8 +14,6 @@ import com.demo.emsbackend.repository.RoleRepository;
 import com.demo.emsbackend.repository.UserRepository;
 import com.demo.emsbackend.security.JWTGenerator;
 
-import lombok.AllArgsConstructor;
-
 import java.util.Collections;
 
 import org.springframework.http.HttpStatus;

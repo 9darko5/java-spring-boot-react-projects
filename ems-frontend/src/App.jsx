@@ -1,8 +1,8 @@
 import './App.css'
-import EmployeeComponent from './components/EmployeeComponent'
+import RunnerComponent from './components/RunnerComponent'
 import FooterComponent from './components/FooterComponent'
 import HeaderComponent from './components/HeaderComponent'
-import ListEmployeeComponent from './components/ListEmployeeComponent'
+import ListRunnerComponent from './components/ListRunnerComponent'
 import LoginComponent from './components/LoginComponent'
 import RegisterComponent from './components/RegisterComponent'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -20,13 +20,13 @@ function App() {
           {/* https://localhost:3000/register*/}
           <Route path='/register' element={<RegisterComponent />} />
           {/* https://localhost:3000*/}
-          <Route path='/' element={ <ProtectedRoute><ListEmployeeComponent /></ProtectedRoute>}></Route>
-          {/* https://localhost:3000/employees*/}
-          <Route path='/employees' element={ <ProtectedRoute><ListEmployeeComponent /></ProtectedRoute>}></Route>
-          {/* https://localhost:3000/add-employee*/}
-          <Route path='/add-employee' element={ <ProtectedRoute><EmployeeComponent /></ProtectedRoute> }></Route>
-          {/* https://localhost:3000/edit-employee*/}
-          <Route path='/edit-employee/:id' element={ <ProtectedRoute><EmployeeComponent /></ProtectedRoute> }></Route>
+          <Route path='/' element={ <ProtectedRoute><ListRunnerComponent /></ProtectedRoute>}></Route>
+          {/* https://localhost:3000/runners*/}
+          <Route path='/runners' element={ <ProtectedRoute><ListRunnerComponent /></ProtectedRoute>}></Route>
+          {/* https://localhost:3000/add-runner*/}
+          <Route path='/add-runner' element={ <ProtectedRoute><RunnerComponent /></ProtectedRoute> }></Route>
+          {/* https://localhost:3000/edit-runner*/}
+          <Route path='/edit-runner/:id' element={ <ProtectedRoute><RunnerComponent /></ProtectedRoute> }></Route>
         </Routes>
         <FooterComponent/>
       </BrowserRouter>

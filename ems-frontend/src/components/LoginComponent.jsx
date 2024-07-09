@@ -12,7 +12,7 @@ const LoginComponent = () => {
     try {
       const response = await axios.post('https://localhost:443/api/auth/login', { username, password });
       localStorage.setItem('accessToken', response.data.accessToken);
-      navigate('/employees');
+      navigate('/runners');
     } catch (error) {
       console.error('Login error', error);
     }

@@ -24,7 +24,7 @@ export const HeaderComponent = () => {
     <div>
         <header>
            <nav className='navbar navbar-dark bg-dark'>
-                <a className="navbar-brand" href="http://localhost:3000">Employee Management System</a>
+                <a className="navbar-brand" href="http://localhost:3000">Runner Management System</a>
                 {isAuthenticated && (
                   <form className="form my-2 my-lg-0" onSubmit={handleLogout}>
                     <button className="btn btn-primary my-2 my-sm-0" type="submit">Logout</button>
