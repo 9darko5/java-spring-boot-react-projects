@@ -7,6 +7,7 @@ import LoginComponent from './components/LoginComponent'
 import RegisterComponent from './components/RegisterComponent'
 import ProtectedRoute from './components/ProtectedRoute'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import ErrorPageComponent from './components/ErrorPageComponent'
 
 function App() {
 
@@ -27,6 +28,8 @@ function App() {
           <Route path='/add-runner' element={ <ProtectedRoute><RunnerComponent /></ProtectedRoute> }></Route>
           {/* https://localhost:3000/edit-runner*/}
           <Route path='/edit-runner/:id' element={ <ProtectedRoute><RunnerComponent /></ProtectedRoute> }></Route>
+          {/* https://localhost:3000/error*/}
+          <Route path="/error" element={<ErrorPageComponent />} />
         </Routes>
         <FooterComponent/>
       </BrowserRouter>

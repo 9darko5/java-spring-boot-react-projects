@@ -25,7 +25,9 @@ const RunnerComponent = () => {
                 setLastName(response.data.lastName);
                 setEmail(response.data.email);
            }).catch(error => {
-                console.error(error);
+            if (error.response && error.response.status === 401) {
+                navigate('/error');
+              }
            })
         }
     }, []);
@@ -34,7 +36,6 @@ const RunnerComponent = () => {
         e.preventDefault();
 
         const runner = {firstName, lastName, email};
-        console.log(runner);
 
         if(validateForm()){
 
@@ -43,12 +44,18 @@ const RunnerComponent = () => {
                     console.log(response.data);
                     navigator('/runners')
                 }).catch((error) => {
-                    console.error(error);
+                    if (error.response && error.response.status === 401) {
+                        navigate('/error');
+                      }
                 });
             } else {
                 createRunner(runner).then((response)=>{
-                    console.log(response.data);
                     navigator('/runners');
+                }).catch((error) => {
+                    if (error.response && error.response.status === 401) {
+                        const navigate = useNavigate();
+                        navigate('/error');
+                      }
                 });
             }
         }

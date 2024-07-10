@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import { deleteRunner, listRunners } from '../services/RunnerService';
 import { useNavigate } from 'react-router-dom';
+import { isTokenExpired } from '../helpers/token';
 
 const ListRunnerComponent = () => {
 
@@ -15,7 +16,16 @@ const ListRunnerComponent = () => {
         listRunners().then((response) => {
             setRunners(response.data);
         }).catch(error => {
-            console.error(error);
+            if (error.response && error.response.status === 401) {
+                const token = localStorage.getItem('accessToken');
+                if(isTokenExpired(token)){
+                    localStorage.removeItem('accessToken');
+                    navigator('/login');
+                } else{
+                    navigator('/error');
+                }
+              }
+              
         })
     }
 
@@ -31,7 +41,9 @@ const ListRunnerComponent = () => {
         deleteRunner(id).then((response) => {
             getAllRunners();
         }).catch(error => {
-            console.error(error);
+            if (error.response && error.response.status === 401) {
+                navigator('/error');
+              }
         })
     }
 
