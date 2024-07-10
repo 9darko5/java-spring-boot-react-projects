@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import RunnerComponent from './components/RunnerComponent'
 import FooterComponent from './components/FooterComponent'
 import HeaderComponent from './components/HeaderComponent'
@@ -8,8 +9,9 @@ import ProtectedRoute from './components/ProtectedRoute'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import ErrorPageComponent from './components/ErrorPageComponent'
 import './App.css'
+import RunnerDetailsComponent from './components/RunnerDetailsComponent';
 function App() {
-
+  
   return (
     <>
       <BrowserRouter>
@@ -27,6 +29,8 @@ function App() {
           <Route path='/add-runner' element={ <ProtectedRoute><RunnerComponent /></ProtectedRoute> }></Route>
           {/* https://localhost:3000/edit-runner*/}
           <Route path='/edit-runner/:id' element={ <ProtectedRoute><RunnerComponent /></ProtectedRoute> }></Route>
+          {/* https://localhost:3000/runner-details*/}
+          <Route path='/runner-details/:id' element={ <ProtectedRoute><RunnerDetailsComponent /></ProtectedRoute> }></Route>
           {/* https://localhost:3000/error*/}
           <Route path="/error" element={<ErrorPageComponent />} />
         </Routes>
