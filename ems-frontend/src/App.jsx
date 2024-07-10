@@ -1,4 +1,3 @@
-import './App.css'
 import RunnerComponent from './components/RunnerComponent'
 import FooterComponent from './components/FooterComponent'
 import HeaderComponent from './components/HeaderComponent'
@@ -8,7 +7,7 @@ import RegisterComponent from './components/RegisterComponent'
 import ProtectedRoute from './components/ProtectedRoute'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import ErrorPageComponent from './components/ErrorPageComponent'
-
+import './App.css'
 function App() {
 
   return (
