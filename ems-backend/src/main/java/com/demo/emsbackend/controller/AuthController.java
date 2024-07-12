@@ -2,6 +2,8 @@ package com.demo.emsbackend.controller;
 
 import com.demo.emsbackend.service.TokenBlacklistService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.websocket.server.PathParam;
+
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,16 +17,17 @@ import com.demo.emsbackend.repository.UserRepository;
 import com.demo.emsbackend.security.JWTGenerator;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 
@@ -96,6 +99,12 @@ public class AuthController {
         return new ResponseEntity<>("User registered successfully!", HttpStatus.OK);
     }
 
+    @GetMapping("getUserRoles")
+    public ResponseEntity<List<Role>> getUserRoles(@PathParam("username") String username) {
+        List<Role> roles = userRepository.findRolesByUsername(username);
+        return ResponseEntity.ok(roles); // );
+    }
+    
     @GetMapping("IsAlive")
     public String getMethodName() {
         return new String("OK");

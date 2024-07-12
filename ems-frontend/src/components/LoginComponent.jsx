@@ -1,31 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import axiosInstance from '../helpers/axiosConfig';
 
 const LoginComponent = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-
-
-      try {
-        const response = await axiosInstance.getUserRoles(username);
-        const roles = response.data;
-        debugger
-
-        // Redirect based on the roles
-        if (roles.contains('ADMIN')) {
-          navigate('/runners');
-        } else if (roles.includes('USER')) {
-          navigate('/runner-details');
-        } else {
-          navigate('/login');
-        }
-      } catch (error) {
-        setError('Failed to fetch user roles. Please try again later.');
-        navigate('/login');
-      } 
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -33,15 +13,16 @@ const LoginComponent = () => {
       const response = await axios.post('https://localhost:443/api/auth/login', { username, password });
       localStorage.setItem('accessToken', response.data.accessToken);
 
-      const userRoles = await axios.post('https://localhost:443/api/auth/getUserRoles', { username });
+      const rolesResponse = await axios.get('https://localhost:443/api/auth/getUserRoles?username='+ username);
+      const userRoles = rolesResponse.data.map(role => role.name).join(',');
       debugger
-      if (userRoles.contains('ADMIN')) {
+      if (userRoles.includes('ROLE_ADMIN')) {
         navigate('/runners');
-      } else if (roles.contains('USER')) {
+      } else if (userRoles.includes('ROLE_USER')) {
         navigate('/runner-details');
       } else {
         navigate('/login');
-      }
+       } 
     } catch (error) {
       console.error('Login error', error);
     }
