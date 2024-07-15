@@ -3,14 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const RegisterComponent = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://localhost:443/api/auth/register', { username, password });
+      await axios.post('https://localhost:443/api/auth/register', { email, password, firstName, lastName });
       navigate('/login');
     } catch (error) {
       console.error('Register error', error);
@@ -22,8 +24,16 @@ const RegisterComponent = () => {
       <h2>Register</h2>
       <form onSubmit={handleRegister}>
         <div className="form-group">
-          <label>Username</label>
-          <input type="text" className="form-control" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <label>First name</label>
+          <input type="text" className="form-control" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+        </div>
+        <div className="form-group">
+          <label>Last name</label>
+          <input type="text" className="form-control" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+        </div>
+        <div className="form-group">
+          <label>Email</label>
+          <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div className="form-group">
           <label>Password</label>

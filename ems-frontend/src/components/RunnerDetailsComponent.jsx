@@ -18,10 +18,10 @@ const RunnerDetailsComponent = () => {
     const fetchRunner = async () => {
       setLoading(true);
       const runnerData = await getRunner(id);
-      if (runnerData) {
-        setFirstName(runnerData.firstName);
-        setLastName(runnerData.lastName);
-        setEmail(runnerData.email);
+      if (runnerData.data) {
+        setFirstName(runnerData.data.firstName);
+        setLastName(runnerData.data.lastName);
+        setEmail(runnerData.data.email);
       } else {
         setError('Failed to fetch runner data. Please try again later.');
       }

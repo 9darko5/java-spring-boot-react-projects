@@ -1,6 +1,10 @@
 package com.demo.emsbackend.controller;
 
 import com.demo.emsbackend.service.TokenBlacklistService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.websocket.server.PathParam;
 
@@ -10,13 +14,17 @@ import org.springframework.web.bind.annotation.*;
 import com.demo.emsbackend.dto.AuthResponseDto;
 import com.demo.emsbackend.dto.LoginDto;
 import com.demo.emsbackend.dto.RegisterDto;
+import com.demo.emsbackend.dto.RunnerUserRolesDto;
 import com.demo.emsbackend.entity.Role;
+import com.demo.emsbackend.entity.Runner;
 import com.demo.emsbackend.entity.UserEntity;
 import com.demo.emsbackend.repository.RoleRepository;
+import com.demo.emsbackend.repository.RunnerRepository;
 import com.demo.emsbackend.repository.UserRepository;
 import com.demo.emsbackend.security.JWTGenerator;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +47,7 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+    private RunnerRepository runnerRepository;
     private PasswordEncoder passwordEncoder;
     private JWTGenerator jwtGenerator;
 
@@ -47,12 +56,14 @@ public class AuthController {
     public AuthController(AuthenticationManager authenticationManager,
     UserRepository userRepository,
     RoleRepository roleRepository,
+    RunnerRepository runnerRepository,
     PasswordEncoder passwordEncoder,
     JWTGenerator jwtGenerator,
     TokenBlacklistService tokenBlacklistService){
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.runnerRepository = runnerRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtGenerator = jwtGenerator;
         this.tokenBlacklistService = tokenBlacklistService;
@@ -82,27 +93,42 @@ public class AuthController {
 
     @PostMapping("register")
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
-        if(userRepository.existsByUsername(registerDto.getUsername())){
-            return new ResponseEntity<>("Username is taken!", HttpStatus.BAD_REQUEST);
+        if(userRepository.existsByEmail(registerDto.getEmail())){
+            return new ResponseEntity<>("Email is taken!", HttpStatus.BAD_REQUEST);
         }
 
         UserEntity user = new UserEntity();
 
-        user.setUsername(registerDto.getUsername());
+        user.setEmail(registerDto.getEmail());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
-        Role roles = roleRepository.findByName("USER").get();
+        Role roles = roleRepository.findByName("ROLE_USER").get();
         user.setRoles(Collections.singletonList(roles));
 
         userRepository.save(user);
+
+        var runner = new Runner();
+        runner.setEmail(registerDto.getEmail());
+        runner.setFirstName(registerDto.getFirstName());
+        runner.setLastName(registerDto.getLastName());
+
+        runnerRepository.save(runner);
 
         return new ResponseEntity<>("User registered successfully!", HttpStatus.OK);
     }
 
     @GetMapping("getUserRoles")
-    public ResponseEntity<List<Role>> getUserRoles(@PathParam("username") String username) {
-        List<Role> roles = userRepository.findRolesByUsername(username);
-        return ResponseEntity.ok(roles); // );
+    public ResponseEntity<RunnerUserRolesDto> getUserRoles(@PathParam("email") String email) {
+
+        List<Role> roles = userRepository.findRolesByEmail(email);
+        var rolesCsv = roles.stream().map(Role::getName).collect(Collectors.toList()); 
+        var runnerId = runnerRepository.findIdByEmail(email);
+        
+        var response = new RunnerUserRolesDto();
+        response.setRolesCSV(com.demo.emsbackend.helpers.StringUtils.ListToCSV(rolesCsv));
+        response.setRunnerId(runnerId.isPresent() ? runnerId.get() : 0);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
     
     @GetMapping("IsAlive")

@@ -11,9 +11,9 @@ import com.demo.emsbackend.entity.Role;
 import com.demo.emsbackend.entity.UserEntity;
 
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    Optional<UserEntity> findByUsername(String username);
-    Boolean existsByUsername(String username);
+    Optional<UserEntity> findByEmail(String email);
+    Boolean existsByEmail(String email);
 
-    @Query("SELECT u.roles FROM UserEntity u WHERE u.username = :username")
-    List<Role> findRolesByUsername(@Param("username") String username);
+    @Query("SELECT u.roles FROM UserEntity u WHERE u.email = :email")
+    List<Role> findRolesByEmail(@Param("email") String email);
 }
