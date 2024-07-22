@@ -5,7 +5,7 @@ import java.util.List;
 import com.demo.emsbackend.dto.RunnerDto;
 
 public interface RunnerService {
-    RunnerDto createRunnerDto(RunnerDto runnerDto);
+    RunnerDto createRunnerDto(RunnerDto runnerDto) throws Exception;
     RunnerDto getRunnerById(Long runnerId);
     List<RunnerDto> getAllRunners();
     RunnerDto updateRunner(Long runnerId, RunnerDto runnerDto);

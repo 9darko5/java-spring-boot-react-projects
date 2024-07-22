@@ -1,11 +1,16 @@
 package com.demo.emsbackend.controller;
 
+import com.demo.emsbackend.entity.Role;
+import com.demo.emsbackend.entity.UserEntity;
+import com.demo.emsbackend.repository.RoleRepository;
+import com.demo.emsbackend.repository.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
 import com.demo.emsbackend.dto.RunnerDto;
 import com.demo.emsbackend.service.RunnerService;
 import lombok.AllArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -17,10 +22,12 @@ import org.springframework.http.ResponseEntity;
 @RequestMapping("/api/runners")
 public class RunnerController {
     private RunnerService runnerService;
+    private UserRepository userRepository;
+    private RoleRepository roleRepository;
 
     // Build Add Runner REST API
     @PostMapping
-    public ResponseEntity<RunnerDto> createRunner(@RequestBody RunnerDto runnerDto){
+    public ResponseEntity<RunnerDto> createRunner(@RequestBody RunnerDto runnerDto) throws Exception {
         RunnerDto savedRunner = runnerService.createRunnerDto(runnerDto);
 
         return new ResponseEntity<>(savedRunner, HttpStatus.CREATED);

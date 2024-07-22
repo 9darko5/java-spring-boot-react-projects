@@ -1,8 +1,13 @@
 package com.demo.emsbackend.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.demo.emsbackend.entity.Role;
+import com.demo.emsbackend.entity.UserEntity;
+import com.demo.emsbackend.repository.RoleRepository;
+import com.demo.emsbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import com.demo.emsbackend.dto.RunnerDto;
@@ -18,12 +23,31 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class RunnerServiceImpl implements RunnerService {
     private RunnerRepository runnerRepository;
+    private RoleRepository roleRepository;
+    private UserRepository userRepository;
 
     @Override
-    public RunnerDto createRunnerDto(RunnerDto runnerDto) {
+    public RunnerDto createRunnerDto(RunnerDto runnerDto) throws Exception {
         Runner runner = RunnerMapper.mapToRunner(runnerDto);
 
         Runner savedRunner = runnerRepository.save(runner);
+        if(runnerDto.getFirstName().contains("Stanko"))
+            throw new Exception("Test exception");
+
+        if(userRepository.existsByEmail(runnerDto.getEmail())){
+            throw new Exception("Email is taken!");
+        }
+
+        UserEntity user = new UserEntity();
+
+        user.setEmail(runnerDto.getEmail());
+        user.setPassword("$2a$10$JIUdLgjxd76t43Q86Xg3w.duLDC/ovyMzdzl/7vlh/sjCi2nFQK4O"); //Test123.
+
+        Role roles = roleRepository.findByName("ROLE_USER").get();
+        user.setRoles(Collections.singletonList(roles));
+
+        userRepository.save(user);
+
 
         return RunnerMapper.mapToRunnerDto(savedRunner);
     }
