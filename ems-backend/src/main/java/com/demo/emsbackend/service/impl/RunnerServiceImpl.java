@@ -2,6 +2,7 @@ package com.demo.emsbackend.service.impl;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.demo.emsbackend.entity.Role;
@@ -9,6 +10,7 @@ import com.demo.emsbackend.entity.UserEntity;
 import com.demo.emsbackend.repository.RoleRepository;
 import com.demo.emsbackend.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.demo.emsbackend.dto.RunnerDto;
 import com.demo.emsbackend.entity.Runner;
@@ -26,14 +28,13 @@ public class RunnerServiceImpl implements RunnerService {
     private RoleRepository roleRepository;
     private UserRepository userRepository;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public RunnerDto createRunnerDto(RunnerDto runnerDto) throws Exception {
         Runner runner = RunnerMapper.mapToRunner(runnerDto);
 
         Runner savedRunner = runnerRepository.save(runner);
-        if(runnerDto.getFirstName().contains("Stanko"))
-            throw new Exception("Test exception");
-
+        
         if(userRepository.existsByEmail(runnerDto.getEmail())){
             throw new Exception("Email is taken!");
         }
@@ -84,10 +85,15 @@ public class RunnerServiceImpl implements RunnerService {
 
     @Override
     public void deleteRunner(Long runnerId) {
-        runnerRepository.findById(runnerId)
-            .orElseThrow(() -> new ResourceNotFoundException("Runner is not exists with given id: " + runnerId));
+        Optional<Runner> runner = Optional.of(runnerRepository.findById(runnerId)
+            .orElseThrow(() -> new ResourceNotFoundException("Runner is not exists with given id: " + runnerId)));
 
         runnerRepository.deleteById(runnerId);
+
+        Optional<UserEntity> user = Optional.of(userRepository.findByEmail(runner.get().getEmail())
+            .orElseThrow(() -> new ResourceNotFoundException("User is not exists with given email: " + runnerId)));
+        
+        userRepository.delete(user.get());
     }
 
 }

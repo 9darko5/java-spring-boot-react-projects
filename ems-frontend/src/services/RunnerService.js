@@ -1,6 +1,6 @@
 import axiosInstance from '../helpers/axiosConfig';
 
-const REST_API_BASE_URL = "https://localhost:443/api/runners";
+const REST_API_BASE_URL = "https://localhost:8443/api/runners";
 
 export const listRunners = () => axiosInstance.get(REST_API_BASE_URL);
 

@@ -12,9 +12,9 @@ const LoginComponent = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://localhost:443/api/auth/login', { username, password });
+      const response = await axios.post('https://localhost:8443/api/auth/login', { username, password });
       localStorage.setItem('accessToken', response.data.accessToken);
-      const rolesResponse = await axios.get('https://localhost:443/api/auth/getUserRoles?email='+ username);
+      const rolesResponse = await axios.get('https://localhost:8443/api/auth/getUserRoles?email='+ username);
       var userRoles = rolesResponse.data.rolesCSV;
       var runnerId = rolesResponse.data.runnerId;
         
